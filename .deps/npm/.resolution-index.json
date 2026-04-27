@@ -1,0 +1,16 @@
+{
+  "Contracts/ServiceProviderRegistry.sol": {
+    "__sources__": {
+      "Contracts/ServiceProviderRegistry.sol": {
+        "content": "//",
+        "file": "Contracts/ServiceProviderRegistry.sol"
+      }
+    }
+  },
+  "Contracts/VehicleRegistryContract.sol": {
+    "__sources__": {}
+  },
+  "Contracts/MaintenanceRecordContract.sol": {
+    "__sources__": {}
+  }
+}
