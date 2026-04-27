@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AutoTrace DApp</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: #f4f6f8;
+      color: #222;
+    }
+
+    header {
+      background: #111827;
+      color: white;
+      padding: 24px 40px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 32px;
+    }
+
+    header p {
+      margin-top: 8px;
+      color: #d1d5db;
+    }
+
+    .wallet-bar {
+      background: white;
+      padding: 16px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .wallet-status {
+      font-size: 14px;
+      color: #555;
+    }
+
+    button {
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 10px 16px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      padding: 22px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .card h2 {
+      margin-top: 0;
+      font-size: 20px;
+      color: #111827;
+      border-bottom: 1px solid #e5e7eb;
+      padding-bottom: 10px;
+    }
+
+    label {
+      display: block;
+      margin-top: 12px;
+      font-size: 14px;
+      font-weight: bold;
+      color: #374151;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      margin-top: 6px;
+      padding: 10px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 70px;
+    }
+
+    .role-badge {
+      display: inline-block;
+      background: #e0f2fe;
+      color: #0369a1;
+      padding: 4px 8px;
+      border-radius: 20px;
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    .output {
+      margin-top: 25px;
+      background: #111827;
+      color: #d1d5db;
+      padding: 18px;
+      border-radius: 10px;
+      min-height: 80px;
+      font-family: Consolas, monospace;
+      white-space: pre-wrap;
+    }
+
+    .note {
+      font-size: 13px;
+      color: #666;
+      margin-top: 8px;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AutoTrace</h1>
+    <p>Blockchain-based vehicle maintenance history system</p>
+  </header>
+
+  <section class="wallet-bar">
+    <div>
+      <strong>Wallet:</strong>
+      <span id="walletAddress" class="wallet-status">Not connected</span>
+    </div>
+    <button onclick="connectWallet()">Connect MetaMask</button>
+  </section>
+
+  <main class="container">
+    <div class="grid">
+      <section class="card">
+        <span class="role-badge">Admin / Manufacturer</span>
+        <h2>Register Vehicle</h2>
+
+        <label>VIN / Vehicle ID</label>
+        <input id="vehicleVin" placeholder="e.g. JH4DC5300XS000001" />
+
+        <label>Make</label>
+        <input id="vehicleMake" placeholder="e.g. Honda" />
+
+        <label>Model</label>
+        <input id="vehicleModel" placeholder="e.g. Integra Type R" />
+
+        <label>Year</label>
+        <input id="vehicleYear" type="number" placeholder="e.g. 2002" />
+
+        <label>Owner Wallet Address</label>
+        <input id="vehicleOwner" placeholder="0x..." />
+
+        <button onclick="registerVehicle()">Register Vehicle</button>
+        <p class="note">Calls VehicleRegistryContract.registerVehicle()</p>
+      </section>
+
+      <section class="card">
+        <span class="role-badge">Admin</span>
+        <h2>Approve Service Provider</h2>
+
+        <label>Mechanic Wallet Address</label>
+        <input id="providerAddress" placeholder="0x..." />
+
+        <label>Business Name</label>
+        <input id="providerName" placeholder="e.g. Brisbane Auto Repairs" />
+
+        <label>Licence Number</label>
+        <input id="providerLicence" placeholder="e.g. LIC12345" />
+
+        <button onclick="registerProvider()">Approve Mechanic</button>
+        <p class="note">Calls ServiceProviderRegistry.registerServiceProvider()</p>
+      </section>
+
+      <section class="card">
+        <span class="role-badge">Mechanic / Service Centre</span>
+        <h2>Add Maintenance Record</h2>
+
+        <label>Vehicle ID</label>
+        <input id="serviceVehicleId" placeholder="Vehicle ID" />
+
+        <label>Record Type</label>
+        <select id="recordType">
+          <option value="service">Service</option>
+          <option value="repair">Repair</option>
+        </select>
+
+        <label>Description</label>
+        <input id="serviceDescription" placeholder="e.g. Oil change, brake pads replaced" />
+
+        <label>Mileage</label>
+        <input id="serviceMileage" type="number" placeholder="e.g. 135000" />
+
+        <label>Evidence Hash</label>
+        <input id="serviceHash" placeholder="Hash of invoice/report/image" />
+
+        <button onclick="addMaintenanceRecord()">Add Record</button>
+        <p class="note">MaintenanceRecordContract checks ServiceProviderRegistry.isAuthorised() before writing.</p>
+      </section>
+
+      <section class="card">
+        <span class="role-badge">Vehicle Owner</span>
+        <h2>Grant Access</h2>
+
+        <label>Vehicle ID</label>
+        <input id="accessVehicleId" placeholder="Vehicle ID" />
+
+        <label>Buyer / Dealer Wallet Address</label>
+        <input id="viewerAddress" placeholder="0x..." />
+
+        <button onclick="grantAccess()">Grant View Access</button>
+        <p class="note">Allows a buyer, dealer, or inspector to view vehicle history.</p>
+      </section>
+
+      <section class="card">
+        <span class="role-badge">Buyer / Dealer / Inspector</span>
+        <h2>View Vehicle History</h2>
+
+        <label>Vehicle ID</label>
+        <input id="historyVehicleId" placeholder="Vehicle ID" />
+
+        <button onclick="viewHistory()">View History</button>
+        <p class="note">Calls MaintenanceRecordContract.viewMaintenanceHistory()</p>
+      </section>
+
+      <section class="card">
+        <span class="role-badge">Buyer / Dealer / Inspector</span>
+        <h2>Verify Record</h2>
+
+        <label>Vehicle ID</label>
+        <input id="verifyVehicleId" placeholder="Vehicle ID" />
+
+        <label>Record Index</label>
+        <input id="recordIndex" type="number" placeholder="e.g. 0" />
+
+        <label>Uploaded Document Hash</label>
+        <input id="uploadedHash" placeholder="Hash of document provided by seller" />
+
+        <button onclick="verifyRecord()">Verify Record</button>
+        <p class="note">Compares the provided evidence hash with the stored on-chain hash.</p>
+      </section>
+    </div>
+
+    <section class="output" id="output">System messages will appear here...</section>
+  </main>
+
+  <script>
+    let currentAccount = null;
+
+    function showMessage(message) {
+      document.getElementById("output").textContent = message;
+    }
+
+    async function connectWallet() {
+      if (!window.ethereum) {
+        showMessage("MetaMask is not installed. Please install MetaMask to use this DApp.");
+        return;
+      }
+
+      try {
+        const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+        currentAccount = accounts[0];
+        document.getElementById("walletAddress").textContent = currentAccount;
+        showMessage("Wallet connected: " + currentAccount);
+      } catch (error) {
+        showMessage("Wallet connection rejected or failed.");
+      }
+    }
+
+    function requireWallet() {
+      if (!currentAccount) {
+        showMessage("Please connect MetaMask first.");
+        return false;
+      }
+      return true;
+    }
+
+    function registerVehicle() {
+      if (!requireWallet()) return;
+
+      const vin = document.getElementById("vehicleVin").value;
+      const make = document.getElementById("vehicleMake").value;
+      const model = document.getElementById("vehicleModel").value;
+      const year = document.getElementById("vehicleYear").value;
+      const owner = document.getElementById("vehicleOwner").value;
+
+      showMessage(
+        "Demo action: registerVehicle()\n" +
+        "VIN: " + vin + "\n" +
+        "Make: " + make + "\n" +
+        "Model: " + model + "\n" +
+        "Year: " + year + "\n" +
+        "Owner: " + owner + "\n\n" +
+        "Next step: connect this button to VehicleRegistryContract.registerVehicle()."
+      );
+    }
+
+    function registerProvider() {
+      if (!requireWallet()) return;
+
+      const address = document.getElementById("providerAddress").value;
+      const name = document.getElementById("providerName").value;
+      const licence = document.getElementById("providerLicence").value;
+
+      showMessage(
+        "Demo action: registerServiceProvider()\n" +
+        "Mechanic Address: " + address + "\n" +
+        "Business Name: " + name + "\n" +
+        "Licence Number: " + licence + "\n\n" +
+        "Next step: connect this button to ServiceProviderRegistry.registerServiceProvider()."
+      );
+    }
+
+    function addMaintenanceRecord() {
+      if (!requireWallet()) return;
+
+      const vehicleId = document.getElementById("serviceVehicleId").value;
+      const type = document.getElementById("recordType").value;
+      const description = document.getElementById("serviceDescription").value;
+      const mileage = document.getElementById("serviceMileage").value;
+      const hash = document.getElementById("serviceHash").value;
+
+      showMessage(
+        "Demo action: addMaintenanceRecord()\n" +
+        "Vehicle ID: " + vehicleId + "\n" +
+        "Type: " + type + "\n" +
+        "Description: " + description + "\n" +
+        "Mileage: " + mileage + "\n" +
+        "Evidence Hash: " + hash + "\n\n" +
+        "Contract logic: MaintenanceRecordContract checks mechanic authorisation and vehicle registration before writing."
+      );
+    }
+
+    function grantAccess() {
+      if (!requireWallet()) return;
+
+      const vehicleId = document.getElementById("accessVehicleId").value;
+      const viewer = document.getElementById("viewerAddress").value;
+
+      showMessage(
+        "Demo action: grantAccess()\n" +
+        "Vehicle ID: " + vehicleId + "\n" +
+        "Viewer Address: " + viewer + "\n\n" +
+        "Only the current owner should be allowed to grant viewing access."
+      );
+    }
+
+    function viewHistory() {
+      if (!requireWallet()) return;
+
+      const vehicleId = document.getElementById("historyVehicleId").value;
+
+      showMessage(
+        "Demo action: viewMaintenanceHistory()\n" +
+        "Vehicle ID: " + vehicleId + "\n\n" +
+        "Example result:\n" +
+        "1. Oil service | 135000 km | Hash: 0xabc123...\n" +
+        "2. Brake pad replacement | 138500 km | Hash: 0xdef456..."
+      );
+    }
+
+    function verifyRecord() {
+      if (!requireWallet()) return;
+
+      const vehicleId = document.getElementById("verifyVehicleId").value;
+      const index = document.getElementById("recordIndex").value;
+      const uploadedHash = document.getElementById("uploadedHash").value;
+
+      showMessage(
+        "Demo action: verifyRecord()\n" +
+        "Vehicle ID: " + vehicleId + "\n" +
+        "Record Index: " + index + "\n" +
+        "Provided Hash: " + uploadedHash + "\n\n" +
+        "Next step: compare this hash with the hash returned by MaintenanceRecordContract.verifyRecord()."
+      );
+    }
+  </script>
+</body>
+</html>
