@@ -1,0 +1,378 @@
+{
+	"compiler": {
+		"version": "0.8.30+commit.73712a01"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_serviceProviderRegistryAddress",
+						"type": "address"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "accessGranted",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "vehicleId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "repairDescription",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "partsReplaced",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "mileage",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "date",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "invoiceHash",
+						"type": "string"
+					}
+				],
+				"name": "addRepairRecord",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "vehicleId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "serviceType",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "mileage",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "date",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "notesHash",
+						"type": "string"
+					}
+				],
+				"name": "addServiceRecord",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "admin",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "vehicleId",
+						"type": "uint256"
+					}
+				],
+				"name": "getRecordCount",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "vehicleId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "viewer",
+						"type": "address"
+					}
+				],
+				"name": "grantAccess",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "vehicleId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "oldOwner",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "newOwner",
+						"type": "address"
+					}
+				],
+				"name": "onOwnershipTransfer",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "vehicleId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "viewer",
+						"type": "address"
+					}
+				],
+				"name": "revokeAccess",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "serviceProviderRegistryAddress",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_vehicleRegistryAddress",
+						"type": "address"
+					}
+				],
+				"name": "setVehicleRegistry",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "vehicleRegistryAddress",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "vehicleId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "recordIndex",
+						"type": "uint256"
+					}
+				],
+				"name": "verifyRecord",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "vehicleId",
+						"type": "uint256"
+					}
+				],
+				"name": "viewMaintenanceHistory",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "string",
+								"name": "recordType",
+								"type": "string"
+							},
+							{
+								"internalType": "string",
+								"name": "description",
+								"type": "string"
+							},
+							{
+								"internalType": "uint256",
+								"name": "mileage",
+								"type": "uint256"
+							},
+							{
+								"internalType": "string",
+								"name": "date",
+								"type": "string"
+							},
+							{
+								"internalType": "string",
+								"name": "evidenceHash",
+								"type": "string"
+							},
+							{
+								"internalType": "address",
+								"name": "addedBy",
+								"type": "address"
+							},
+							{
+								"internalType": "uint256",
+								"name": "timestamp",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct MaintenanceRecordContract.MaintenanceRecord[]",
+						"name": "",
+						"type": "tuple[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"Contracts/MaintenanceRecordContract.sol": "MaintenanceRecordContract"
+		},
+		"evmVersion": "prague",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"Contracts/MaintenanceRecordContract.sol": {
+			"keccak256": "0x8c1161f176e39e78db2721ad686080146518083b5df51ef55c5a21655d523b9a",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://bd2ab307943167ab1133373f9d14f7f53c45cde29541b7e375ff8e09ef3baee1",
+				"dweb:/ipfs/QmYSrnygvqL9fm9vnzgaghy8SJTEdvEyDJe1XCpXkLfVvS"
+			]
+		},
+		"Contracts/interfaces/IServiceProviderRegistry.sol": {
+			"keccak256": "0x2da31f6335f8a9b145da4afd30c1358949d7d650623614d9cc1075ce196e7273",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://cf391e16818727d33c0b9175af06e748fb373270ffb497e2bc8e4bbaf063e14a",
+				"dweb:/ipfs/QmNVrV5EccMzKAsUvBxTBDMdD3SjxX9Ni3gvk4bSWevPoJ"
+			]
+		},
+		"Contracts/interfaces/IVehicleRegistryContract.sol": {
+			"keccak256": "0xb94cef9feb850ebdee5e420712ec28c91ecb51a4c47a0420fa09306b4441b848",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://e0e8a303033e53f65e9251be6addc44840aba5e4710da6aa7e0d743bf45718c4",
+				"dweb:/ipfs/QmcJ4mMVq9nWuJAonsSNc6KfxHxi4D5GrkBSFo4wF6ST3b"
+			]
+		}
+	},
+	"version": 1
+}
