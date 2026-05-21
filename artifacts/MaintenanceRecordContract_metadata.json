@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.30+commit.73712a01"
+		"version": "0.8.34+commit.80d5c536"
 	},
 	"language": "Solidity",
 	"output": {
@@ -337,7 +337,7 @@
 		"compilationTarget": {
 			"Contracts/MaintenanceRecordContract.sol": "MaintenanceRecordContract"
 		},
-		"evmVersion": "prague",
+		"evmVersion": "osaka",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -349,28 +349,28 @@
 		"remappings": []
 	},
 	"sources": {
-		"Contracts/MaintenanceRecordContract.sol": {
-			"keccak256": "0x8c1161f176e39e78db2721ad686080146518083b5df51ef55c5a21655d523b9a",
+		"Contracts/Interfaces/IServiceProviderRegistry.sol": {
+			"keccak256": "0xa8ce67b78cf6b0e31a66e19dfbd1a6955be3010e50ed98fc678f662f044d360e",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://bd2ab307943167ab1133373f9d14f7f53c45cde29541b7e375ff8e09ef3baee1",
-				"dweb:/ipfs/QmYSrnygvqL9fm9vnzgaghy8SJTEdvEyDJe1XCpXkLfVvS"
+				"bzz-raw://a792e3c6759b388d3651073c6616a6862a3b4c910d0d224ec3c099b26e2a53e5",
+				"dweb:/ipfs/QmeziFhJ8YtmtXWzesUSF38RGyEaJCMafD7cMEwHoL3qtP"
 			]
 		},
-		"Contracts/interfaces/IServiceProviderRegistry.sol": {
-			"keccak256": "0x2da31f6335f8a9b145da4afd30c1358949d7d650623614d9cc1075ce196e7273",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://cf391e16818727d33c0b9175af06e748fb373270ffb497e2bc8e4bbaf063e14a",
-				"dweb:/ipfs/QmNVrV5EccMzKAsUvBxTBDMdD3SjxX9Ni3gvk4bSWevPoJ"
-			]
-		},
-		"Contracts/interfaces/IVehicleRegistryContract.sol": {
+		"Contracts/Interfaces/IVehicleRegistryContract.sol": {
 			"keccak256": "0xb94cef9feb850ebdee5e420712ec28c91ecb51a4c47a0420fa09306b4441b848",
 			"license": "MIT",
 			"urls": [
 				"bzz-raw://e0e8a303033e53f65e9251be6addc44840aba5e4710da6aa7e0d743bf45718c4",
 				"dweb:/ipfs/QmcJ4mMVq9nWuJAonsSNc6KfxHxi4D5GrkBSFo4wF6ST3b"
+			]
+		},
+		"Contracts/MaintenanceRecordContract.sol": {
+			"keccak256": "0xa6f684aaa98aef79e61e5210d0b2bc1141346b8afa76a596ae79ba4429ef78b5",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://6c63670866ed336c013d3bcdbe2f7e961c87c78bcddd4e7459698ed120b8a2c4",
+				"dweb:/ipfs/QmXj7bZuDMGHBfJTVzPG2QQf19W8DoX39rePyPyDF5p49d"
 			]
 		}
 	},

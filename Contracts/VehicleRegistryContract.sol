@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "./interfaces/IMaintenanceRecordContract.sol";
+import  "./Interfaces/IMaintenanceRecordContract.sol";
 
 contract VehicleRegistryContract {
     address public admin;
