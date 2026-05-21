@@ -3,400 +3,492 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AutoTrace DApp</title>
+  <title>AutoTrace</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
-    * {
-      box-sizing: border-box;
-      font-family: Arial, Helvetica, sans-serif;
+    :root {
+      --bg: #0a0c10;
+      --surface: #12151c;
+      --surface2: #1a1e28;
+      --border: #252a38;
+      --accent: #00e5a0;
+      --accent2: #3b82f6;
+      --warn: #f59e0b;
+      --error: #ef4444;
+      --text: #e2e8f0;
+      --muted: #64748b;
+      --mono: 'Space Mono', monospace;
+      --sans: 'DM Sans', sans-serif;
     }
-
-    body {
-      margin: 0;
-      background: #f4f6f8;
-      color: #222;
-    }
-
-    header {
-      background: #111827;
-      color: white;
-      padding: 24px 40px;
-      text-align: center;
-    }
-
-    header h1 {
-      margin: 0;
-      font-size: 32px;
-    }
-
-    header p {
-      margin-top: 8px;
-      color: #d1d5db;
-    }
-
-    .wallet-bar {
-      background: white;
-      padding: 16px 40px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid #ddd;
-    }
-
-    .wallet-status {
-      font-size: 14px;
-      color: #555;
-    }
-
-    button {
-      background: #2563eb;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      padding: 10px 16px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    button:hover {
-      background: #1d4ed8;
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 30px auto;
-      padding: 0 20px;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 20px;
-    }
-
-    .card {
-      background: white;
-      padding: 22px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    }
-
-    .card h2 {
-      margin-top: 0;
-      font-size: 20px;
-      color: #111827;
-      border-bottom: 1px solid #e5e7eb;
-      padding-bottom: 10px;
-    }
-
-    label {
-      display: block;
-      margin-top: 12px;
-      font-size: 14px;
-      font-weight: bold;
-      color: #374151;
-    }
-
-    input, textarea, select {
-      width: 100%;
-      margin-top: 6px;
-      padding: 10px;
-      border: 1px solid #d1d5db;
-      border-radius: 6px;
-      font-size: 14px;
-    }
-
-    textarea {
-      resize: vertical;
-      min-height: 70px;
-    }
-
-    .role-badge {
-      display: inline-block;
-      background: #e0f2fe;
-      color: #0369a1;
-      padding: 4px 8px;
-      border-radius: 20px;
-      font-size: 12px;
-      margin-bottom: 8px;
-    }
-
-    .output {
-      margin-top: 25px;
-      background: #111827;
-      color: #d1d5db;
-      padding: 18px;
-      border-radius: 10px;
-      min-height: 80px;
-      font-family: Consolas, monospace;
-      white-space: pre-wrap;
-    }
-
-    .note {
-      font-size: 13px;
-      color: #666;
-      margin-top: 8px;
-      line-height: 1.4;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; }
+    header { border-bottom: 1px solid var(--border); padding: 20px 40px; display: flex; align-items: center; justify-content: space-between; background: var(--surface); position: sticky; top: 0; z-index: 100; }
+    .logo { font-family: var(--mono); font-size: 22px; letter-spacing: -1px; }
+    .logo span { color: var(--accent); }
+    .wallet-info { display: flex; align-items: center; gap: 12px; }
+    #walletAddress { font-family: var(--mono); font-size: 12px; color: var(--muted); background: var(--surface2); padding: 6px 12px; border-radius: 6px; border: 1px solid var(--border); max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    #networkBadge { font-family: var(--mono); font-size: 11px; padding: 4px 10px; border-radius: 20px; background: transparent; border: 1px solid var(--border); color: var(--muted); }
+    #networkBadge.connected { border-color: var(--accent); color: var(--accent); }
+    .btn { font-family: var(--mono); font-size: 12px; font-weight: 700; letter-spacing: 0.5px; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; transition: all 0.15s; }
+    .btn-primary { background: var(--accent); color: #000; }
+    .btn-primary:hover { background: #00ffb2; transform: translateY(-1px); }
+    .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+    .btn-secondary:hover { border-color: var(--accent2); color: var(--accent2); }
+    #configSection { background: var(--surface); border-bottom: 1px solid var(--border); padding: 20px 40px; }
+    #configSection h3 { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); margin-bottom: 14px; }
+    .config-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .config-field label { font-size: 11px; color: var(--muted); display: block; margin-bottom: 4px; font-family: var(--mono); }
+    .config-field input { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 8px 12px; font-family: var(--mono); font-size: 12px; color: var(--accent); }
+    .config-field input:focus { outline: none; border-color: var(--accent); }
+    #loadContractsBtn { margin-top: 12px; }
+    main { max-width: 1400px; margin: 30px auto; padding: 0 30px; display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 20px; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; }
+    .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+    .card-title { font-family: var(--mono); font-size: 14px; font-weight: 700; }
+    .role-tag { font-family: var(--mono); font-size: 10px; padding: 3px 8px; border-radius: 20px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
+    .role-admin { background: rgba(59,130,246,.15); color: var(--accent2); border: 1px solid rgba(59,130,246,.3); }
+    .role-mechanic { background: rgba(245,158,11,.12); color: var(--warn); border: 1px solid rgba(245,158,11,.25); }
+    .role-owner { background: rgba(0,229,160,.1); color: var(--accent); border: 1px solid rgba(0,229,160,.2); }
+    .role-viewer { background: rgba(148,163,184,.1); color: #94a3b8; border: 1px solid rgba(148,163,184,.2); }
+    .field { margin-bottom: 14px; }
+    .field label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; font-weight: 500; }
+    .field input, .field select { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px; font-family: var(--sans); font-size: 14px; color: var(--text); transition: border-color 0.15s; }
+    .field input:focus, .field select:focus { outline: none; border-color: var(--accent2); }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .card .btn { width: 100%; margin-top: 6px; }
+    #outputPanel { max-width: 1400px; margin: 0 auto 40px; padding: 0 30px; }
+    .output-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .output-label { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); }
+    #output { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; font-family: var(--mono); font-size: 13px; line-height: 1.8; white-space: pre-wrap; word-break: break-all; min-height: 100px; max-height: 400px; overflow-y: auto; color: var(--muted); }
+    .out-success { color: var(--accent); }
+    .out-error { color: var(--error); }
+    .out-info { color: var(--accent2); }
+    .out-warn { color: var(--warn); }
+    .tx-link { color: var(--accent2); text-decoration: underline; cursor: pointer; }
+    .history-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 8px; }
+    .history-table th { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); color: var(--muted); font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 1px; }
+    .history-table td { padding: 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .history-table tr:last-child td { border-bottom: none; }
+    .type-service { color: var(--accent); }
+    .type-repair { color: var(--warn); }
+    .hash-cell { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+    #historyOutput { max-width: 1400px; margin: 0 auto 40px; padding: 0 30px; display: none; }
+    #historyOutput .card { overflow-x: auto; }
+    hr.divider { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
   </style>
 </head>
 <body>
-  <header>
-    <h1>AutoTrace</h1>
-    <p>Blockchain-based vehicle maintenance history system</p>
-  </header>
 
-  <section class="wallet-bar">
-    <div>
-      <strong>Wallet:</strong>
-      <span id="walletAddress" class="wallet-status">Not connected</span>
+<header>
+  <div class="logo">Auto<span>Trace</span></div>
+  <div class="wallet-info">
+    <span id="networkBadge">No network</span>
+    <span id="walletAddress">Not connected</span>
+    <button class="btn btn-primary" onclick="connectWallet()">Connect MetaMask</button>
+  </div>
+</header>
+
+<div id="configSection">
+  <h3>Contract Addresses</h3>
+  <div class="config-grid">
+    <div class="config-field">
+      <label>VehicleRegistryContract</label>
+      <input id="addrVehicle" placeholder="0x..." />
     </div>
-    <button onclick="connectWallet()">Connect MetaMask</button>
-  </section>
-
-  <main class="container">
-    <div class="grid">
-      <section class="card">
-        <span class="role-badge">Admin / Manufacturer</span>
-        <h2>Register Vehicle</h2>
-
-        <label>VIN / Vehicle ID</label>
-        <input id="vehicleVin" placeholder="e.g. JH4DC5300XS000001" />
-
-        <label>Make</label>
-        <input id="vehicleMake" placeholder="e.g. Honda" />
-
-        <label>Model</label>
-        <input id="vehicleModel" placeholder="e.g. Integra Type R" />
-
-        <label>Year</label>
-        <input id="vehicleYear" type="number" placeholder="e.g. 2002" />
-
-        <label>Owner Wallet Address</label>
-        <input id="vehicleOwner" placeholder="0x..." />
-
-        <button onclick="registerVehicle()">Register Vehicle</button>
-        <p class="note">Calls VehicleRegistryContract.registerVehicle()</p>
-      </section>
-
-      <section class="card">
-        <span class="role-badge">Admin</span>
-        <h2>Approve Service Provider</h2>
-
-        <label>Mechanic Wallet Address</label>
-        <input id="providerAddress" placeholder="0x..." />
-
-        <label>Business Name</label>
-        <input id="providerName" placeholder="e.g. Brisbane Auto Repairs" />
-
-        <label>Licence Number</label>
-        <input id="providerLicence" placeholder="e.g. LIC12345" />
-
-        <button onclick="registerProvider()">Approve Mechanic</button>
-        <p class="note">Calls ServiceProviderRegistry.registerServiceProvider()</p>
-      </section>
-
-      <section class="card">
-        <span class="role-badge">Mechanic / Service Centre</span>
-        <h2>Add Maintenance Record</h2>
-
-        <label>Vehicle ID</label>
-        <input id="serviceVehicleId" placeholder="Vehicle ID" />
-
-        <label>Record Type</label>
-        <select id="recordType">
-          <option value="service">Service</option>
-          <option value="repair">Repair</option>
-        </select>
-
-        <label>Description</label>
-        <input id="serviceDescription" placeholder="e.g. Oil change, brake pads replaced" />
-
-        <label>Mileage</label>
-        <input id="serviceMileage" type="number" placeholder="e.g. 135000" />
-
-        <label>Evidence Hash</label>
-        <input id="serviceHash" placeholder="Hash of invoice/report/image" />
-
-        <button onclick="addMaintenanceRecord()">Add Record</button>
-        <p class="note">MaintenanceRecordContract checks ServiceProviderRegistry.isAuthorised() before writing.</p>
-      </section>
-
-      <section class="card">
-        <span class="role-badge">Vehicle Owner</span>
-        <h2>Grant Access</h2>
-
-        <label>Vehicle ID</label>
-        <input id="accessVehicleId" placeholder="Vehicle ID" />
-
-        <label>Buyer / Dealer Wallet Address</label>
-        <input id="viewerAddress" placeholder="0x..." />
-
-        <button onclick="grantAccess()">Grant View Access</button>
-        <p class="note">Allows a buyer, dealer, or inspector to view vehicle history.</p>
-      </section>
-
-      <section class="card">
-        <span class="role-badge">Buyer / Dealer / Inspector</span>
-        <h2>View Vehicle History</h2>
-
-        <label>Vehicle ID</label>
-        <input id="historyVehicleId" placeholder="Vehicle ID" />
-
-        <button onclick="viewHistory()">View History</button>
-        <p class="note">Calls MaintenanceRecordContract.viewMaintenanceHistory()</p>
-      </section>
-
-      <section class="card">
-        <span class="role-badge">Buyer / Dealer / Inspector</span>
-        <h2>Verify Record</h2>
-
-        <label>Vehicle ID</label>
-        <input id="verifyVehicleId" placeholder="Vehicle ID" />
-
-        <label>Record Index</label>
-        <input id="recordIndex" type="number" placeholder="e.g. 0" />
-
-        <label>Uploaded Document Hash</label>
-        <input id="uploadedHash" placeholder="Hash of document provided by seller" />
-
-        <button onclick="verifyRecord()">Verify Record</button>
-        <p class="note">Compares the provided evidence hash with the stored on-chain hash.</p>
-      </section>
+    <div class="config-field">
+      <label>ServiceProviderRegistry</label>
+      <input id="addrProvider" placeholder="0x..." />
     </div>
+    <div class="config-field">
+      <label>MaintenanceRecordContract</label>
+      <input id="addrMaintenance" placeholder="0x..." />
+    </div>
+  </div>
+  <button class="btn btn-secondary" id="loadContractsBtn" onclick="loadContracts()">Load Contracts</button>
+</div>
 
-    <section class="output" id="output">System messages will appear here...</section>
-  </main>
+<main>
 
-  <script>
-    let currentAccount = null;
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Register Vehicle</span>
+      <span class="role-tag role-admin">Admin</span>
+    </div>
+    <div class="field"><label>VIN</label><input id="vehicleVin" placeholder="e.g. JH4DC5300XS000001" /></div>
+    <div class="field-row">
+      <div class="field"><label>Make</label><input id="vehicleMake" placeholder="e.g. Honda" /></div>
+      <div class="field"><label>Model</label><input id="vehicleModel" placeholder="e.g. Integra" /></div>
+    </div>
+    <div class="field"><label>Year</label><input id="vehicleYear" type="number" placeholder="e.g. 2002" /></div>
+    <div class="field"><label>Owner Wallet Address</label><input id="vehicleOwner" placeholder="0x..." /></div>
+    <button class="btn btn-primary" onclick="registerVehicle()">Register Vehicle</button>
+  </div>
 
-    function showMessage(message) {
-      document.getElementById("output").textContent = message;
-    }
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Approve Service Provider</span>
+      <span class="role-tag role-admin">Admin</span>
+    </div>
+    <div class="field"><label>Mechanic Wallet Address</label><input id="providerAddress" placeholder="0x..." /></div>
+    <div class="field"><label>Business Name</label><input id="providerName" placeholder="e.g. Brisbane Auto Repairs" /></div>
+    <div class="field"><label>Licence Number</label><input id="providerLicence" placeholder="e.g. LIC12345" /></div>
+    <button class="btn btn-primary" onclick="registerProvider()">Approve Mechanic</button>
+  </div>
 
-    async function connectWallet() {
-      if (!window.ethereum) {
-        showMessage("MetaMask is not installed. Please install MetaMask to use this DApp.");
-        return;
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Add Service Record</span>
+      <span class="role-tag role-mechanic">Mechanic</span>
+    </div>
+    <div class="field"><label>Vehicle ID</label><input id="serviceVehicleId" type="number" placeholder="e.g. 1" /></div>
+    <div class="field"><label>Service Description</label><input id="serviceDescription" placeholder="e.g. Oil change + filter" /></div>
+    <div class="field-row">
+      <div class="field"><label>Mileage (km)</label><input id="serviceMileage" type="number" placeholder="e.g. 135000" /></div>
+      <div class="field"><label>Date</label><input id="serviceDate" type="date" /></div>
+    </div>
+    <div class="field"><label>Notes / Invoice Hash</label><input id="serviceHash" placeholder="Hash of invoice" /></div>
+    <button class="btn btn-primary" onclick="addServiceRecord()">Add Service Record</button>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Add Repair Record</span>
+      <span class="role-tag role-mechanic">Mechanic</span>
+    </div>
+    <div class="field"><label>Vehicle ID</label><input id="repairVehicleId" type="number" placeholder="e.g. 1" /></div>
+    <div class="field"><label>Repair Description</label><input id="repairDescription" placeholder="e.g. Brake pads replaced" /></div>
+    <div class="field"><label>Parts Replaced</label><input id="repairParts" placeholder="e.g. Front pads, rotors" /></div>
+    <div class="field-row">
+      <div class="field"><label>Mileage (km)</label><input id="repairMileage" type="number" placeholder="e.g. 138500" /></div>
+      <div class="field"><label>Date</label><input id="repairDate" type="date" /></div>
+    </div>
+    <div class="field"><label>Invoice Hash</label><input id="repairHash" placeholder="Hash of invoice" /></div>
+    <button class="btn btn-primary" onclick="addRepairRecord()">Add Repair Record</button>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Grant View Access</span>
+      <span class="role-tag role-owner">Owner</span>
+    </div>
+    <div class="field"><label>Vehicle ID</label><input id="accessVehicleId" type="number" placeholder="e.g. 1" /></div>
+    <div class="field"><label>Buyer / Inspector Address</label><input id="viewerAddress" placeholder="0x..." /></div>
+    <button class="btn btn-primary" onclick="grantAccess()">Grant Access</button>
+    <button class="btn btn-secondary" style="margin-top:8px" onclick="revokeAccess()">Revoke Access</button>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">View History & Verify</span>
+      <span class="role-tag role-viewer">Buyer / Inspector</span>
+    </div>
+    <div class="field"><label>Vehicle ID</label><input id="historyVehicleId" type="number" placeholder="e.g. 1" /></div>
+    <button class="btn btn-primary" onclick="viewHistory()">View Maintenance History</button>
+    <hr class="divider">
+    <div class="field"><label>Record Index</label><input id="recordIndex" type="number" placeholder="e.g. 0" /></div>
+    <div class="field"><label>Document Hash (from seller)</label><input id="uploadedHash" placeholder="Hash to verify" /></div>
+    <button class="btn btn-secondary" onclick="verifyRecord()">Verify Record Hash</button>
+    <hr class="divider">
+    <div class="field"><label>Look Up Vehicle by ID</label><input id="lookupVehicleId" type="number" placeholder="e.g. 1" /></div>
+    <button class="btn btn-secondary" onclick="getVehicleDetails()">Get Vehicle Details</button>
+  </div>
+
+</main>
+
+<div id="historyOutput">
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title" id="historyTitle">Maintenance History</span>
+      <button class="btn btn-secondary" style="font-size:11px;padding:6px 12px" onclick="document.getElementById('historyOutput').style.display='none'">Close</button>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="history-table" id="historyTable">
+        <thead>
+          <tr>
+            <th>#</th><th>Type</th><th>Description</th><th>Mileage</th><th>Date</th><th>Evidence Hash</th><th>Added By</th>
+          </tr>
+        </thead>
+        <tbody id="historyBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div id="outputPanel">
+  <div class="output-header">
+    <span class="output-label">Transaction Log</span>
+    <button class="btn btn-secondary" style="font-size:11px;padding:5px 10px" onclick="clearOutput()">Clear</button>
+  </div>
+  <div id="output">Waiting for actions...</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+<script>
+  const VEHICLE_ABI = [
+    {"inputs":[],"stateMutability":"nonpayable","type":"constructor"},
+    {"inputs":[{"internalType":"string","name":"vin","type":"string"},{"internalType":"string","name":"make","type":"string"},{"internalType":"string","name":"model","type":"string"},{"internalType":"uint256","name":"year","type":"uint256"},{"internalType":"address","name":"ownerAddress","type":"address"}],"name":"registerVehicle","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},
+    {"inputs":[{"internalType":"uint256","name":"vehicleId","type":"uint256"},{"internalType":"address","name":"newOwnerAddress","type":"address"}],"name":"updateOwner","outputs":[],"stateMutability":"nonpayable","type":"function"},
+    {"inputs":[{"internalType":"uint256","name":"vehicleId","type":"uint256"}],"name":"getVehicleDetails","outputs":[{"internalType":"string","name":"","type":"string"},{"internalType":"string","name":"","type":"string"},{"internalType":"string","name":"","type":"string"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},
+    {"inputs":[{"internalType":"uint256","name":"vehicleId","type":"uint256"}],"name":"isRegistered","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},
+    {"inputs":[{"internalType":"uint256","name":"vehicleId","type":"uint256"}],"name":"getOwner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},
+    {"inputs":[{"internalType":"address","name":"_maintenanceContractAddress","type":"address"}],"name":"setMaintenanceContract","outputs":[],"stateMutability":"nonpayable","type":"function"},
+    {"inputs":[],"name":"admin","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},
+    {"inputs":[],"name":"vehicleCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"}
+  ];
+
+  const PROVIDER_ABI = [
+    {"inputs":[],"stateMutability":"nonpayable","type":"constructor"},
+    {"inputs":[{"internalType":"address","name":"providerAddress","type":"address"},{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"licenceNumber","type":"string"}],"name":"registerServiceProvider","outputs":[],"stateMutability":"nonpayable","type":"function"},
+    {"inputs":[{"internalType":"address","name":"providerAddress","type":"address"}],"name":"revokeServiceProvider","outputs":[],"stateMutability":"nonpayable","type":"function"},
+    {"inputs":[{"internalType":"address","name":"providerAddress","type":"address"}],"name":"isAuthorised","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},
+    {"inputs":[{"internalType":"address","name":"providerAddress","type":"address"}],"name":"getProviderDetails","outputs":[{"internalType":"string","name":"","type":"string"},{"internalType":"string","name":"","type":"string"},{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},
+    {"inputs":[],"name":"admin","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"}
+  ];
+
+  const MAINTENANCE_ABI = [
+    {"inputs":[{"internalType":"address","name":"_serviceProviderRegistryAddress","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},
+    {"inputs":[{"internalType":"uint256","name":"vehicleId","type":"uint256"},{"internalType":"string","name":"serviceType","type":"string"},{"internalType":"uint256","name":"mileage","type":"uint256"},{"internalType":"string","name":"date","type":"string"},{"internalType":"string","name":"notesHash","type":"string"}],"name":"addServiceRecord","outputs":[],"stateMutability":"nonpayable","type":"function"},
+    {"inputs":[{"internalType":"uint256","name":"vehicleId","type":"uint256"},{"internalType":"string","name":"repairDescription","type":"string"},{"internalType":"string","name":"partsReplaced","type":"string"},{"internalType":"uint256","name":"mileage","type":"uint256"},{"internalType":"string","name":"date","type":"string"},{"internalType":"string","name":"invoiceHash","type":"string"}],"name":"addRepairRecord","outputs":[],"stateMutability":"nonpayable","type":"function"},
+    {"inputs":[{"internalType":"uint256","name":"vehicleId","type":"uint256"},{"internalType":"address","name":"viewer","type":"address"}],"name":"grantAccess","outputs":[],"stateMutability":"nonpayable","type":"function"},
+    {"inputs":[{"internalType":"uint256","name":"vehicleId","type":"uint256"},{"internalType":"address","name":"viewer","type":"address"}],"name":"revokeAccess","outputs":[],"stateMutability":"nonpayable","type":"function"},
+    {"inputs":[{"internalType":"uint256","name":"vehicleId","type":"uint256"}],"name":"viewMaintenanceHistory","outputs":[{"components":[{"internalType":"string","name":"recordType","type":"string"},{"internalType":"string","name":"description","type":"string"},{"internalType":"uint256","name":"mileage","type":"uint256"},{"internalType":"string","name":"date","type":"string"},{"internalType":"string","name":"evidenceHash","type":"string"},{"internalType":"address","name":"addedBy","type":"address"},{"internalType":"uint256","name":"timestamp","type":"uint256"}],"internalType":"struct MaintenanceRecordContract.MaintenanceRecord[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},
+    {"inputs":[{"internalType":"uint256","name":"vehicleId","type":"uint256"},{"internalType":"uint256","name":"recordIndex","type":"uint256"}],"name":"verifyRecord","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},
+    {"inputs":[{"internalType":"uint256","name":"vehicleId","type":"uint256"}],"name":"getRecordCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
+    {"inputs":[{"internalType":"address","name":"_vehicleRegistryAddress","type":"address"}],"name":"setVehicleRegistry","outputs":[],"stateMutability":"nonpayable","type":"function"},
+    {"inputs":[{"internalType":"uint256","name":"vehicleId","type":"uint256"},{"internalType":"address","name":"oldOwner","type":"address"},{"internalType":"address","name":"newOwner","type":"address"}],"name":"onOwnershipTransfer","outputs":[],"stateMutability":"nonpayable","type":"function"},
+    {"inputs":[],"name":"admin","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"}
+  ];
+
+  let provider, signer, currentAccount;
+  let vehicleContract, providerContract, maintenanceContract;
+  let contractsLoaded = false;
+
+  function log(msg, type = '') {
+    const el = document.getElementById('output');
+    const ts = new Date().toLocaleTimeString();
+    const span = document.createElement('span');
+    span.className = type ? `out-${type}` : '';
+    span.textContent = `[${ts}] ${msg}\n`;
+    el.appendChild(span);
+    el.scrollTop = el.scrollHeight;
+  }
+
+  function logTx(hash) {
+    const el = document.getElementById('output');
+    const span = document.createElement('span');
+    span.className = 'out-info';
+    span.innerHTML = `[tx] <a class="tx-link" href="https://sepolia.etherscan.io/tx/${hash}" target="_blank">${hash.slice(0,20)}...${hash.slice(-8)}</a>\n`;
+    el.appendChild(span);
+    el.scrollTop = el.scrollHeight;
+  }
+
+  function clearOutput() { document.getElementById('output').innerHTML = ''; }
+
+  async function connectWallet() {
+    if (!window.ethereum) { log('MetaMask not detected.', 'error'); return; }
+    try {
+      await window.ethereum.request({ method: 'eth_requestAccounts' });
+
+      const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+      if (chainId !== '0xaa36a7') {
+        try {
+          await window.ethereum.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: '0xaa36a7' }],
+          });
+        } catch (switchErr) {
+          log('Please switch MetaMask to Sepolia testnet manually.', 'error');
+          return;
+        }
       }
 
-      try {
-        const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
-        currentAccount = accounts[0];
-        document.getElementById("walletAddress").textContent = currentAccount;
-        showMessage("Wallet connected: " + currentAccount);
-      } catch (error) {
-        showMessage("Wallet connection rejected or failed.");
+      const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+      currentAccount = accounts[0];
+      provider = new ethers.providers.Web3Provider(window.ethereum);
+      signer = provider.getSigner();
+      document.getElementById('walletAddress').textContent = currentAccount.slice(0,6) + '...' + currentAccount.slice(-4);
+      const badge = document.getElementById('networkBadge');
+      badge.textContent = 'sepolia';
+      badge.classList.add('connected');
+      log(`Connected: ${currentAccount}`, 'success');
+      log('Network: Sepolia', 'info');
+      window.ethereum.on('accountsChanged', (acc) => {
+        currentAccount = acc[0];
+        signer = provider.getSigner();
+        document.getElementById('walletAddress').textContent = currentAccount.slice(0,6) + '...' + currentAccount.slice(-4);
+        if (contractsLoaded) loadContracts();
+      });
+      window.ethereum.on('chainChanged', () => window.location.reload());
+    } catch (err) {
+      log('Connection failed: ' + err.message, 'error');
+    }
+  }
+
+  function loadContracts() {
+    if (!signer) { log('Connect MetaMask first.', 'error'); return; }
+    const addrV = document.getElementById('addrVehicle').value.trim();
+    const addrP = document.getElementById('addrProvider').value.trim();
+    const addrM = document.getElementById('addrMaintenance').value.trim();
+    if (!ethers.utils.isAddress(addrV) || !ethers.utils.isAddress(addrP) || !ethers.utils.isAddress(addrM)) {
+      log('Invalid contract addresses.', 'error'); return;
+    }
+    vehicleContract = new ethers.Contract(addrV, VEHICLE_ABI, signer);
+    providerContract = new ethers.Contract(addrP, PROVIDER_ABI, signer);
+    maintenanceContract = new ethers.Contract(addrM, MAINTENANCE_ABI, signer);
+    contractsLoaded = true;
+    log('Contracts loaded.', 'success');
+  }
+
+  function requireContracts() {
+    if (!contractsLoaded) { log('Load contracts first.', 'error'); return false; }
+    if (!currentAccount) { log('Connect MetaMask first.', 'error'); return false; }
+    return true;
+  }
+
+  async function sendTx(label, txPromise) {
+    log(`Sending: ${label}...`);
+    try {
+      const tx = await txPromise;
+      logTx(tx.hash);
+      const receipt = await tx.wait();
+      log(`Confirmed in block ${receipt.blockNumber}.`, 'success');
+      return receipt;
+    } catch (err) {
+      log(`Failed: ${err?.reason || err?.data?.message || err?.message}`, 'error');
+      return null;
+    }
+  }
+
+  async function registerVehicle() {
+    if (!requireContracts()) return;
+    const vin = document.getElementById('vehicleVin').value.trim();
+    const make = document.getElementById('vehicleMake').value.trim();
+    const model = document.getElementById('vehicleModel').value.trim();
+    const year = parseInt(document.getElementById('vehicleYear').value);
+    const owner = document.getElementById('vehicleOwner').value.trim();
+    if (!vin || !make || !model || !year || !owner) { log('Fill all fields.', 'warn'); return; }
+    if (!ethers.utils.isAddress(owner)) { log('Invalid owner address.', 'error'); return; }
+    const receipt = await sendTx(`registerVehicle(${vin})`, vehicleContract.registerVehicle(vin, make, model, year, owner));
+    if (receipt) {
+      const count = await vehicleContract.vehicleCount();
+      log(`Vehicle registered. On-chain ID: ${count.toString()}`, 'success');
+    }
+  }
+
+  async function registerProvider() {
+    if (!requireContracts()) return;
+    const address = document.getElementById('providerAddress').value.trim();
+    const name = document.getElementById('providerName').value.trim();
+    const licence = document.getElementById('providerLicence').value.trim();
+    if (!address || !name || !licence) { log('Fill all fields.', 'warn'); return; }
+    if (!ethers.utils.isAddress(address)) { log('Invalid address.', 'error'); return; }
+    await sendTx(`registerServiceProvider(${address.slice(0,8)}...)`, providerContract.registerServiceProvider(address, name, licence));
+  }
+
+  async function addServiceRecord() {
+    if (!requireContracts()) return;
+    const vehicleId = parseInt(document.getElementById('serviceVehicleId').value);
+    const description = document.getElementById('serviceDescription').value.trim();
+    const mileage = parseInt(document.getElementById('serviceMileage').value);
+    const date = document.getElementById('serviceDate').value;
+    const hash = document.getElementById('serviceHash').value.trim();
+    if (!vehicleId || !description || !mileage || !date) { log('Fill all fields.', 'warn'); return; }
+    await sendTx(`addServiceRecord(vehicle #${vehicleId})`, maintenanceContract.addServiceRecord(vehicleId, description, mileage, date, hash));
+  }
+
+  async function addRepairRecord() {
+    if (!requireContracts()) return;
+    const vehicleId = parseInt(document.getElementById('repairVehicleId').value);
+    const description = document.getElementById('repairDescription').value.trim();
+    const parts = document.getElementById('repairParts').value.trim();
+    const mileage = parseInt(document.getElementById('repairMileage').value);
+    const date = document.getElementById('repairDate').value;
+    const hash = document.getElementById('repairHash').value.trim();
+    if (!vehicleId || !description || !mileage || !date) { log('Fill all fields.', 'warn'); return; }
+    await sendTx(`addRepairRecord(vehicle #${vehicleId})`, maintenanceContract.addRepairRecord(vehicleId, description, parts, mileage, date, hash));
+  }
+
+  async function grantAccess() {
+    if (!requireContracts()) return;
+    const vehicleId = parseInt(document.getElementById('accessVehicleId').value);
+    const viewer = document.getElementById('viewerAddress').value.trim();
+    if (!vehicleId || !viewer) { log('Fill all fields.', 'warn'); return; }
+    if (!ethers.utils.isAddress(viewer)) { log('Invalid address.', 'error'); return; }
+    await sendTx(`grantAccess(vehicle #${vehicleId})`, maintenanceContract.grantAccess(vehicleId, viewer));
+  }
+
+  async function revokeAccess() {
+    if (!requireContracts()) return;
+    const vehicleId = parseInt(document.getElementById('accessVehicleId').value);
+    const viewer = document.getElementById('viewerAddress').value.trim();
+    if (!vehicleId || !viewer) { log('Fill all fields.', 'warn'); return; }
+    if (!ethers.utils.isAddress(viewer)) { log('Invalid address.', 'error'); return; }
+    await sendTx(`revokeAccess(vehicle #${vehicleId})`, maintenanceContract.revokeAccess(vehicleId, viewer));
+  }
+
+  async function viewHistory() {
+    if (!requireContracts()) return;
+    const vehicleId = parseInt(document.getElementById('historyVehicleId').value);
+    if (!vehicleId) { log('Enter a Vehicle ID.', 'warn'); return; }
+    log(`Fetching history for vehicle #${vehicleId}...`);
+    try {
+      const records = await maintenanceContract.viewMaintenanceHistory(vehicleId);
+      log(`Found ${records.length} record(s).`, 'success');
+      if (records.length === 0) return;
+      document.getElementById('historyTitle').textContent = `Maintenance History — Vehicle #${vehicleId}`;
+      const tbody = document.getElementById('historyBody');
+      tbody.innerHTML = '';
+      records.forEach((r, i) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td style="color:var(--muted)">${i}</td>
+          <td class="type-${r.recordType.toLowerCase()}">${r.recordType}</td>
+          <td>${r.description}</td>
+          <td>${r.mileage.toString()} km</td>
+          <td>${r.date}</td>
+          <td class="hash-cell">${r.evidenceHash || '—'}</td>
+          <td class="hash-cell">${r.addedBy.slice(0,8)}...${r.addedBy.slice(-4)}</td>`;
+        tbody.appendChild(tr);
+      });
+      document.getElementById('historyOutput').style.display = 'block';
+      document.getElementById('historyOutput').scrollIntoView({ behavior: 'smooth' });
+    } catch (err) {
+      log(`Failed: ${err?.reason || err?.data?.message || err?.message}`, 'error');
+    }
+  }
+
+  async function verifyRecord() {
+    if (!requireContracts()) return;
+    const vehicleId = parseInt(document.getElementById('historyVehicleId').value);
+    const recordIndex = parseInt(document.getElementById('recordIndex').value);
+    const uploadedHash = document.getElementById('uploadedHash').value.trim();
+    if (isNaN(vehicleId) || isNaN(recordIndex)) { log('Enter Vehicle ID and Record Index.', 'warn'); return; }
+    try {
+      const onChainHash = await maintenanceContract.verifyRecord(vehicleId, recordIndex);
+      log(`On-chain hash: ${onChainHash || '(empty)'}`, 'info');
+      if (uploadedHash) {
+        if (uploadedHash === onChainHash) {
+          log('MATCH — Record is authentic.', 'success');
+        } else {
+          log('MISMATCH — Hash does not match.', 'error');
+        }
       }
+    } catch (err) {
+      log(`Failed: ${err?.reason || err?.data?.message || err?.message}`, 'error');
     }
+  }
 
-    function requireWallet() {
-      if (!currentAccount) {
-        showMessage("Please connect MetaMask first.");
-        return false;
-      }
-      return true;
+  async function getVehicleDetails() {
+    if (!requireContracts()) return;
+    const vehicleId = parseInt(document.getElementById('lookupVehicleId').value);
+    if (!vehicleId) { log('Enter a Vehicle ID.', 'warn'); return; }
+    try {
+      const [vin, make, model, year, owner] = await vehicleContract.getVehicleDetails(vehicleId);
+      log(`Vehicle #${vehicleId}: ${year} ${make} ${model} | VIN: ${vin} | Owner: ${owner}`, 'success');
+    } catch (err) {
+      log(`Failed: ${err?.reason || err?.data?.message || err?.message}`, 'error');
     }
-
-    function registerVehicle() {
-      if (!requireWallet()) return;
-
-      const vin = document.getElementById("vehicleVin").value;
-      const make = document.getElementById("vehicleMake").value;
-      const model = document.getElementById("vehicleModel").value;
-      const year = document.getElementById("vehicleYear").value;
-      const owner = document.getElementById("vehicleOwner").value;
-
-      showMessage(
-        "Demo action: registerVehicle()\n" +
-        "VIN: " + vin + "\n" +
-        "Make: " + make + "\n" +
-        "Model: " + model + "\n" +
-        "Year: " + year + "\n" +
-        "Owner: " + owner + "\n\n" +
-        "Next step: connect this button to VehicleRegistryContract.registerVehicle()."
-      );
-    }
-
-    function registerProvider() {
-      if (!requireWallet()) return;
-
-      const address = document.getElementById("providerAddress").value;
-      const name = document.getElementById("providerName").value;
-      const licence = document.getElementById("providerLicence").value;
-
-      showMessage(
-        "Demo action: registerServiceProvider()\n" +
-        "Mechanic Address: " + address + "\n" +
-        "Business Name: " + name + "\n" +
-        "Licence Number: " + licence + "\n\n" +
-        "Next step: connect this button to ServiceProviderRegistry.registerServiceProvider()."
-      );
-    }
-
-    function addMaintenanceRecord() {
-      if (!requireWallet()) return;
-
-      const vehicleId = document.getElementById("serviceVehicleId").value;
-      const type = document.getElementById("recordType").value;
-      const description = document.getElementById("serviceDescription").value;
-      const mileage = document.getElementById("serviceMileage").value;
-      const hash = document.getElementById("serviceHash").value;
-
-      showMessage(
-        "Demo action: addMaintenanceRecord()\n" +
-        "Vehicle ID: " + vehicleId + "\n" +
-        "Type: " + type + "\n" +
-        "Description: " + description + "\n" +
-        "Mileage: " + mileage + "\n" +
-        "Evidence Hash: " + hash + "\n\n" +
-        "Contract logic: MaintenanceRecordContract checks mechanic authorisation and vehicle registration before writing."
-      );
-    }
-
-    function grantAccess() {
-      if (!requireWallet()) return;
-
-      const vehicleId = document.getElementById("accessVehicleId").value;
-      const viewer = document.getElementById("viewerAddress").value;
-
-      showMessage(
-        "Demo action: grantAccess()\n" +
-        "Vehicle ID: " + vehicleId + "\n" +
-        "Viewer Address: " + viewer + "\n\n" +
-        "Only the current owner should be allowed to grant viewing access."
-      );
-    }
-
-    function viewHistory() {
-      if (!requireWallet()) return;
-
-      const vehicleId = document.getElementById("historyVehicleId").value;
-
-      showMessage(
-        "Demo action: viewMaintenanceHistory()\n" +
-        "Vehicle ID: " + vehicleId + "\n\n" +
-        "Example result:\n" +
-        "1. Oil service | 135000 km | Hash: 0xabc123...\n" +
-        "2. Brake pad replacement | 138500 km | Hash: 0xdef456..."
-      );
-    }
-
-    function verifyRecord() {
-      if (!requireWallet()) return;
-
-      const vehicleId = document.getElementById("verifyVehicleId").value;
-      const index = document.getElementById("recordIndex").value;
-      const uploadedHash = document.getElementById("uploadedHash").value;
-
-      showMessage(
-        "Demo action: verifyRecord()\n" +
-        "Vehicle ID: " + vehicleId + "\n" +
-        "Record Index: " + index + "\n" +
-        "Provided Hash: " + uploadedHash + "\n\n" +
-        "Next step: compare this hash with the hash returned by MaintenanceRecordContract.verifyRecord()."
-      );
-    }
-  </script>
+  }
+</script>
 </body>
 </html>

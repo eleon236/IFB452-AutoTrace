@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.30+commit.73712a01"
+		"version": "0.8.34+commit.80d5c536"
 	},
 	"language": "Solidity",
 	"output": {
@@ -152,7 +152,7 @@
 		"compilationTarget": {
 			"Contracts/ServiceProviderRegistry.sol": "ServiceProviderRegistry"
 		},
-		"evmVersion": "prague",
+		"evmVersion": "osaka",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"

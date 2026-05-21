@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.30+commit.73712a01"
+		"version": "0.8.34+commit.80d5c536"
 	},
 	"language": "Solidity",
 	"output": {
@@ -275,7 +275,7 @@
 		"compilationTarget": {
 			"Contracts/VehicleRegistryContract.sol": "VehicleRegistryContract"
 		},
-		"evmVersion": "prague",
+		"evmVersion": "osaka",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -287,20 +287,20 @@
 		"remappings": []
 	},
 	"sources": {
-		"Contracts/VehicleRegistryContract.sol": {
-			"keccak256": "0xfc8306f368f1e443eb949bf52701aca76cba02bbcdfd67da330dca563437ecb2",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://85071f3850ce8a8125e22d899f8ea594712cc6767b02f4c05d1951455ee51936",
-				"dweb:/ipfs/Qme9HHgm4Q2aRys4AgsneSyZhAfkfyzmmyWYwWKrpqgufC"
-			]
-		},
-		"Contracts/interfaces/IMaintenanceRecordContract.sol": {
+		"Contracts/Interfaces/IMaintenanceRecordContract.sol": {
 			"keccak256": "0x421b633babe7f20e14d27c4d2613483bc17e772bfd29d99f2762cc9c8cfd61d9",
 			"license": "MIT",
 			"urls": [
 				"bzz-raw://692e87115dffa4b3685d589dc4196acab7ad8e165bd5d9ebebff958b078c1eac",
 				"dweb:/ipfs/QmdJDdFnSFZP4LzDSXPL27QAwAi23R3vLUJcGLbomXr2Am"
+			]
+		},
+		"Contracts/VehicleRegistryContract.sol": {
+			"keccak256": "0x42880680fc3431b39faf96c8bef66a571c8110d9f091a36c1e091eeb0f780102",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://b0fd4c4cc4721678bc8b161ba9188af8cdda892e11ca854fcf24c84b15b65d6a",
+				"dweb:/ipfs/QmbFEtgmE36XnYHug74fqxKrFdbbDDGyrNJideD6qogxWC"
 			]
 		}
 	},
