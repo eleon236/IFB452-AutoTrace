@@ -274,6 +274,16 @@
   let vehicleContract, providerContract, maintenanceContract;
   let contractsLoaded = false;
 
+  window.addEventListener('load', () => {
+    const savedVehicle = localStorage.getItem('autotrace_addrVehicle');
+    const savedProvider = localStorage.getItem('autotrace_addrProvider');
+    const savedMaintenance = localStorage.getItem('autotrace_addrMaintenance');
+
+    if (savedVehicle) document.getElementById('addrVehicle').value = savedVehicle;
+    if (savedProvider) document.getElementById('addrProvider').value = savedProvider;
+    if (savedMaintenance) document.getElementById('addrMaintenance').value = savedMaintenance;
+  });
+
   function log(msg, type = '') {
     const el = document.getElementById('output');
     const ts = new Date().toLocaleTimeString();
@@ -323,11 +333,10 @@
       badge.classList.add('connected');
       log(`Connected: ${currentAccount}`, 'success');
       log('Network: Sepolia', 'info');
-      window.ethereum.on('accountsChanged', (acc) => {
-        currentAccount = acc[0];
-        signer = provider.getSigner();
-        document.getElementById('walletAddress').textContent = currentAccount.slice(0,6) + '...' + currentAccount.slice(-4);
-        if (contractsLoaded) loadContracts();
+      window.ethereum.removeAllListeners?.('accountsChanged');
+      window.ethereum.on('accountsChanged', () => {
+        // Reload so the signer updates cleanly when switching roles/accounts in MetaMask.
+        window.location.reload();
       });
       window.ethereum.on('chainChanged', () => window.location.reload());
     } catch (err) {
@@ -337,12 +346,20 @@
 
   function loadContracts() {
     if (!signer) { log('Connect MetaMask first.', 'error'); return; }
+
     const addrV = document.getElementById('addrVehicle').value.trim();
     const addrP = document.getElementById('addrProvider').value.trim();
     const addrM = document.getElementById('addrMaintenance').value.trim();
+
     if (!ethers.utils.isAddress(addrV) || !ethers.utils.isAddress(addrP) || !ethers.utils.isAddress(addrM)) {
       log('Invalid contract addresses.', 'error'); return;
     }
+
+    // Save addresses so they stay after refresh/account switching.
+    localStorage.setItem('autotrace_addrVehicle', addrV);
+    localStorage.setItem('autotrace_addrProvider', addrP);
+    localStorage.setItem('autotrace_addrMaintenance', addrM);
+
     vehicleContract = new ethers.Contract(addrV, VEHICLE_ABI, signer);
     providerContract = new ethers.Contract(addrP, PROVIDER_ABI, signer);
     maintenanceContract = new ethers.Contract(addrM, MAINTENANCE_ABI, signer);
