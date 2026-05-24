@@ -147,6 +147,8 @@
     <div class="field"><label>Business Name</label><input id="providerName" placeholder="e.g. Brisbane Auto Repairs" /></div>
     <div class="field"><label>Licence Number</label><input id="providerLicence" placeholder="e.g. LIC12345" /></div>
     <button class="btn btn-primary" onclick="registerProvider()">Approve Mechanic</button>
+    <button class="btn btn-secondary" style="margin-top:8px" onclick="checkProvider()">Check Authorisation</button>
+    <button class="btn btn-secondary" style="margin-top:8px" onclick="revokeProvider()">Revoke Mechanic</button>
   </div>
 
   <div class="card">
@@ -193,11 +195,22 @@
 
   <div class="card">
     <div class="card-header">
+      <span class="card-title">Transfer Ownership</span>
+      <span class="role-tag role-owner">Owner</span>
+    </div>
+    <div class="field"><label>Vehicle ID</label><input id="transferVehicleId" type="number" placeholder="e.g. 1" /></div>
+    <div class="field"><label>New Owner Wallet Address</label><input id="newOwnerAddress" placeholder="0x..." /></div>
+    <button class="btn btn-primary" onclick="updateOwner()">Transfer Ownership</button>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
       <span class="card-title">View History & Verify</span>
       <span class="role-tag role-viewer">Buyer / Inspector</span>
     </div>
     <div class="field"><label>Vehicle ID</label><input id="historyVehicleId" type="number" placeholder="e.g. 1" /></div>
     <button class="btn btn-primary" onclick="viewHistory()">View Maintenance History</button>
+    <button class="btn btn-secondary" style="margin-top:8px" onclick="getRecordCount()">Get Record Count</button>
     <hr class="divider">
     <div class="field"><label>Record Index</label><input id="recordIndex" type="number" placeholder="e.g. 0" /></div>
     <div class="field"><label>Document Hash (from seller)</label><input id="uploadedHash" placeholder="Hash to verify" /></div>
@@ -399,6 +412,49 @@
     await sendTx(`registerServiceProvider(${address.slice(0,8)}...)`, providerContract.registerServiceProvider(address, name, licence));
   }
 
+  async function revokeProvider() {
+    if (!requireContracts()) return;
+    const address = document.getElementById('providerAddress').value.trim();
+    if (!address) { log('Enter mechanic wallet address.', 'warn'); return; }
+    if (!ethers.utils.isAddress(address)) { log('Invalid address.', 'error'); return; }
+    await sendTx(`revokeServiceProvider(${address.slice(0,8)}...)`, providerContract.revokeServiceProvider(address));
+  }
+
+  async function checkProvider() {
+    if (!requireContracts()) return;
+    const address = document.getElementById('providerAddress').value.trim();
+    if (!address) { log('Enter mechanic wallet address.', 'warn'); return; }
+    if (!ethers.utils.isAddress(address)) { log('Invalid address.', 'error'); return; }
+    try {
+      const authorised = await providerContract.isAuthorised(address);
+      const details = await providerContract.getProviderDetails(address);
+      log(`Provider ${address}: authorised=${authorised} | name=${details[0] || '(none)'} | licence=${details[1] || '(none)'}`, authorised ? 'success' : 'warn');
+    } catch (err) {
+      log(`Failed: ${err?.reason || err?.data?.message || err?.message}`, 'error');
+    }
+  }
+
+  async function updateOwner() {
+    if (!requireContracts()) return;
+    const vehicleId = parseInt(document.getElementById('transferVehicleId').value);
+    const newOwner = document.getElementById('newOwnerAddress').value.trim();
+    if (isNaN(vehicleId) || vehicleId <= 0 || !newOwner) { log('Fill all fields.', 'warn'); return; }
+    if (!ethers.utils.isAddress(newOwner)) { log('Invalid new owner address.', 'error'); return; }
+    await sendTx(`updateOwner(vehicle #${vehicleId})`, vehicleContract.updateOwner(vehicleId, newOwner));
+  }
+
+  async function getRecordCount() {
+    if (!requireContracts()) return;
+    const vehicleId = parseInt(document.getElementById('historyVehicleId').value);
+    if (isNaN(vehicleId) || vehicleId <= 0) { log('Enter a valid Vehicle ID.', 'warn'); return; }
+    try {
+      const count = await maintenanceContract.getRecordCount(vehicleId);
+      log(`Vehicle #${vehicleId} has ${count.toString()} maintenance record(s).`, 'success');
+    } catch (err) {
+      log(`Failed: ${err?.reason || err?.data?.message || err?.message}`, 'error');
+    }
+  }
+
   async function addServiceRecord() {
     if (!requireContracts()) return;
     const vehicleId = parseInt(document.getElementById('serviceVehicleId').value);
@@ -406,7 +462,7 @@
     const mileage = parseInt(document.getElementById('serviceMileage').value);
     const date = document.getElementById('serviceDate').value;
     const hash = document.getElementById('serviceHash').value.trim();
-    if (!vehicleId || !description || !mileage || !date) { log('Fill all fields.', 'warn'); return; }
+    if (isNaN(vehicleId) || vehicleId <= 0 || !description || isNaN(mileage) || mileage <= 0 || !date) { log('Fill all fields.', 'warn'); return; }
     await sendTx(`addServiceRecord(vehicle #${vehicleId})`, maintenanceContract.addServiceRecord(vehicleId, description, mileage, date, hash));
   }
 
@@ -418,7 +474,7 @@
     const mileage = parseInt(document.getElementById('repairMileage').value);
     const date = document.getElementById('repairDate').value;
     const hash = document.getElementById('repairHash').value.trim();
-    if (!vehicleId || !description || !mileage || !date) { log('Fill all fields.', 'warn'); return; }
+    if (isNaN(vehicleId) || vehicleId <= 0 || !description || isNaN(mileage) || mileage <= 0 || !date) { log('Fill all fields.', 'warn'); return; }
     await sendTx(`addRepairRecord(vehicle #${vehicleId})`, maintenanceContract.addRepairRecord(vehicleId, description, parts, mileage, date, hash));
   }
 
@@ -426,7 +482,7 @@
     if (!requireContracts()) return;
     const vehicleId = parseInt(document.getElementById('accessVehicleId').value);
     const viewer = document.getElementById('viewerAddress').value.trim();
-    if (!vehicleId || !viewer) { log('Fill all fields.', 'warn'); return; }
+    if (isNaN(vehicleId) || vehicleId <= 0 || !viewer) { log('Fill all fields.', 'warn'); return; }
     if (!ethers.utils.isAddress(viewer)) { log('Invalid address.', 'error'); return; }
     await sendTx(`grantAccess(vehicle #${vehicleId})`, maintenanceContract.grantAccess(vehicleId, viewer));
   }
@@ -435,7 +491,7 @@
     if (!requireContracts()) return;
     const vehicleId = parseInt(document.getElementById('accessVehicleId').value);
     const viewer = document.getElementById('viewerAddress').value.trim();
-    if (!vehicleId || !viewer) { log('Fill all fields.', 'warn'); return; }
+    if (isNaN(vehicleId) || vehicleId <= 0 || !viewer) { log('Fill all fields.', 'warn'); return; }
     if (!ethers.utils.isAddress(viewer)) { log('Invalid address.', 'error'); return; }
     await sendTx(`revokeAccess(vehicle #${vehicleId})`, maintenanceContract.revokeAccess(vehicleId, viewer));
   }
@@ -443,7 +499,7 @@
   async function viewHistory() {
     if (!requireContracts()) return;
     const vehicleId = parseInt(document.getElementById('historyVehicleId').value);
-    if (!vehicleId) { log('Enter a Vehicle ID.', 'warn'); return; }
+    if (isNaN(vehicleId) || vehicleId <= 0) { log('Enter a valid Vehicle ID.', 'warn'); return; }
     log(`Fetching history for vehicle #${vehicleId}...`);
     try {
       const records = await maintenanceContract.viewMaintenanceHistory(vehicleId);
@@ -495,7 +551,7 @@
   async function getVehicleDetails() {
     if (!requireContracts()) return;
     const vehicleId = parseInt(document.getElementById('lookupVehicleId').value);
-    if (!vehicleId) { log('Enter a Vehicle ID.', 'warn'); return; }
+    if (isNaN(vehicleId) || vehicleId <= 0) { log('Enter a valid Vehicle ID.', 'warn'); return; }
     try {
       const [vin, make, model, year, owner] = await vehicleContract.getVehicleDetails(vehicleId);
       log(`Vehicle #${vehicleId}: ${year} ${make} ${model} | VIN: ${vin} | Owner: ${owner}`, 'success');
