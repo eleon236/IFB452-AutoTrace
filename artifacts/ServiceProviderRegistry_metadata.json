@@ -138,19 +138,70 @@
 			}
 		],
 		"devdoc": {
+			"details": "This contract acts as the trust gatekeeper. Other contracts can call      isAuthorised() to check whether a wallet is allowed to add maintenance records.",
 			"kind": "dev",
-			"methods": {},
+			"methods": {
+				"getProviderDetails(address)": {
+					"params": {
+						"providerAddress": "Wallet address of the provider."
+					},
+					"returns": {
+						"_0": "Provider name, licence number, and authorisation status."
+					}
+				},
+				"isAuthorised(address)": {
+					"details": "This is the key function called by MaintenanceRecordContract before writes.",
+					"params": {
+						"providerAddress": "Wallet address to check."
+					},
+					"returns": {
+						"_0": "True if the provider is authorised, false otherwise."
+					}
+				},
+				"registerServiceProvider(address,string,string)": {
+					"details": "Only the admin can call this function.",
+					"params": {
+						"licenceNumber": "Licence or registration number for display/audit purposes.",
+						"name": "Business or provider name.",
+						"providerAddress": "Wallet address of the mechanic or service centre."
+					}
+				},
+				"revokeServiceProvider(address)": {
+					"details": "Once revoked, MaintenanceRecordContract checks will fail for this provider.",
+					"params": {
+						"providerAddress": "Wallet address of the provider to revoke."
+					}
+				}
+			},
+			"title": "ServiceProviderRegistry",
 			"version": 1
 		},
 		"userdoc": {
 			"kind": "user",
-			"methods": {},
+			"methods": {
+				"constructor": {
+					"notice": "Sets the contract deployer as the admin."
+				},
+				"getProviderDetails(address)": {
+					"notice": "Returns the stored details for a service provider."
+				},
+				"isAuthorised(address)": {
+					"notice": "Checks whether a provider is currently authorised."
+				},
+				"registerServiceProvider(address,string,string)": {
+					"notice": "Registers or re-approves a mechanic/service provider."
+				},
+				"revokeServiceProvider(address)": {
+					"notice": "Revokes an existing service provider's permission to write records."
+				}
+			},
+			"notice": "Manages the list of approved mechanics/service providers for AutoTrace.",
 			"version": 1
 		}
 	},
 	"settings": {
 		"compilationTarget": {
-			"Contracts/ServiceProviderRegistry.sol": "ServiceProviderRegistry"
+			"Contracts/ServiceProviderRegistry_commented.sol": "ServiceProviderRegistry"
 		},
 		"evmVersion": "prague",
 		"libraries": {},
@@ -164,12 +215,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"Contracts/ServiceProviderRegistry.sol": {
-			"keccak256": "0x1e2aa86d31f83f2b62875cde7dc9a4c01b52116cdcb0e3817f7f0c2a4db289a5",
+		"Contracts/ServiceProviderRegistry_commented.sol": {
+			"keccak256": "0x2513cb39e1edbb434824f1f0eb069a29ca4b1781afa6a716d545c07dbc86814a",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://3371aac88cdb1d7f0c0d0e2f42f14078b3b38715e0901224e9ab481e5c0701c6",
-				"dweb:/ipfs/QmQMNoYVPSJnfh2T6kExxUvVJd39zfLDNm35YfHy4vhvR2"
+				"bzz-raw://d7d4360503ec78e6f970594844d0f7a8618f311d39c63d17d143326db1d0a9c9",
+				"dweb:/ipfs/QmT2JcQsPdPnzpHGNrhRtrkHugDyetrGTH9CGRKxYEGmtt"
 			]
 		}
 	},
