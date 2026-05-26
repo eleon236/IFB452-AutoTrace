@@ -335,7 +335,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"Contracts/MaintenanceRecordContract.sol": "MaintenanceRecordContract"
+			"Contracts/MaintenanceRecordContract_commented.sol": "MaintenanceRecordContract"
 		},
 		"evmVersion": "prague",
 		"libraries": {},
@@ -365,12 +365,12 @@
 				"dweb:/ipfs/QmcJ4mMVq9nWuJAonsSNc6KfxHxi4D5GrkBSFo4wF6ST3b"
 			]
 		},
-		"Contracts/MaintenanceRecordContract.sol": {
-			"keccak256": "0xa6f684aaa98aef79e61e5210d0b2bc1141346b8afa76a596ae79ba4429ef78b5",
+		"Contracts/MaintenanceRecordContract_commented.sol": {
+			"keccak256": "0x1450962f590dc4faf113342e7b9410bced249c1a091230a2002920c17c02bb54",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://6c63670866ed336c013d3bcdbe2f7e961c87c78bcddd4e7459698ed120b8a2c4",
-				"dweb:/ipfs/QmXj7bZuDMGHBfJTVzPG2QQf19W8DoX39rePyPyDF5p49d"
+				"bzz-raw://9b160159a2ad0ba9a35e9468d5528aee10c98825880db24152acc80ad2fd9381",
+				"dweb:/ipfs/QmRX5moFoLascN6BGdreHsSgx4AfWL3VmtAUmJVVAVEsEq"
 			]
 		}
 	},

@@ -273,7 +273,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"Contracts/VehicleRegistryContract.sol": "VehicleRegistryContract"
+			"Contracts/VehicleRegistryContract_commented.sol": "VehicleRegistryContract"
 		},
 		"evmVersion": "prague",
 		"libraries": {},
@@ -295,12 +295,11 @@
 				"dweb:/ipfs/QmdJDdFnSFZP4LzDSXPL27QAwAi23R3vLUJcGLbomXr2Am"
 			]
 		},
-		"Contracts/VehicleRegistryContract.sol": {
-			"keccak256": "0x42880680fc3431b39faf96c8bef66a571c8110d9f091a36c1e091eeb0f780102",
-			"license": "MIT",
+		"Contracts/VehicleRegistryContract_commented.sol": {
+			"keccak256": "0x54ef385e04bc37dd6f465da45bb9835e6cdc93c748cd6c330d5ad673b01c483a",
 			"urls": [
-				"bzz-raw://b0fd4c4cc4721678bc8b161ba9188af8cdda892e11ca854fcf24c84b15b65d6a",
-				"dweb:/ipfs/QmbFEtgmE36XnYHug74fqxKrFdbbDDGyrNJideD6qogxWC"
+				"bzz-raw://a100d81e2d02fcd821cfd00b8a577cf246ce6e8b2c93053b997f67b17262bbc6",
+				"dweb:/ipfs/QmSxEwBKmWpjAGAu58SME9LG3KAPWrYhCzogKi9RhSCTpe"
 			]
 		}
 	},
