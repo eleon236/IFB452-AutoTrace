@@ -344,6 +344,19 @@ The frontend connects to:
 
 Inside the frontend folder:
 
+unzip downloaded github code
+
+```bash
+cd Front End
+```
+Then:
+
+```text
+lite-server
+```
+
+or
+
 ```bash
 npx.cmd http-server
 ```
